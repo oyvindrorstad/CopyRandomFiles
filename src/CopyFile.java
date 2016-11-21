@@ -19,9 +19,9 @@ public class CopyFile {
 
         // Pars input
         if (args.length > 0)
-            sourcePath = args[0];
+            sourcePath = args[0].toLowerCase();
         if (args.length > 1)
-            targetPath = args[1];
+            targetPath = args[1].toLowerCase();
         if (args.length > 2)
             maxAntall = Integer.parseInt((args[2]));
         if (args.length > 3)
@@ -31,15 +31,14 @@ public class CopyFile {
 
         //Usage:
         PathStore pathStore = new PathStore();
-        String rotSti = "C:/Users/Øyvind/Pictures";
         try {
-            Files.walk(Paths.get(rotSti))
+            Files.walk(Paths.get(sourcePath))
                     .filter(Files::isRegularFile)
                     .forEach(pathStore::lagreNavn);
 
             pathStore.printAlleNavn();
         } catch(java.io.IOException e) {
-            System.out.println("createDirectory failed:" + e);
+            System.out.println("KOPIERING AV FILER  failed:" + e);
         }
     }
 
@@ -63,12 +62,13 @@ public class CopyFile {
                 System.out.println(" value:" + me.getValue());
 
                 String inFile = me.getValue().toString();
-                String outFile = inFile.replace(sourcePath, targetPath);
+                Path src = Paths.get(inFile);
+
+                String outFile = targetPath + "\\" + src.getFileName().toString();
+                Path dst = Paths.get(outFile);
 
                 System.out.println("inFile:" + inFile + " outFile:" + outFile + " sourcePath:" + sourcePath + " targetPath:" + targetPath);
 
-                Path src = Paths.get(inFile);
-                Path dst = Paths.get(outFile);
                 try {
                     Files.copy(src, dst, REPLACE_EXISTING);
                 } catch (java.io.IOException e) {
