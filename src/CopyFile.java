@@ -8,7 +8,7 @@ import static java.nio.file.StandardCopyOption.*;
 
 public class CopyFile {
     static Integer teller=0;
-    static HashMap hm = new HashMap();
+
     static String sourcePath ="S";
     static String targetPath ="T";
     static Integer maxAntall =1;
@@ -36,15 +36,37 @@ public class CopyFile {
                     .filter(Files::isRegularFile)
                     .forEach(pathStore::lagreNavn);
 
-            pathStore.printAlleNavn();
+            pathStore.kopierAlleFiler();
         } catch(java.io.IOException e) {
             System.out.println("KOPIERING AV FILER  failed:" + e);
         }
     }
 
     static class PathStore {
+        static HashMap<Integer, String> hm = new HashMap<Integer, String>();
 
-        void printAlleNavn() {
+        void lagreNavn (Path path) {
+            String filNavn = path.toString().toLowerCase();
+
+            if (filNavn.endsWith(".jpg")) {
+                System.out.println(teller + " skrivNavn" + filNavn);
+                hm.put(teller++, filNavn);
+            }
+        }
+
+        void kopierAlleFiler() {
+
+            //String filNavn = hm.get(2);
+            Integer mapSize = hm.size();
+
+            Random rand = new Random();
+
+            // nextInt is normally exclusive of the top value,
+            // so add 1 to make it inclusive
+            Integer randomNum;
+           /* randomNum = rand.nextInt(mapSize);
+            randomNum = rand.nextInt(mapSize);
+            randomNum = rand.nextInt(mapSize);
 
             // kopier filer
             // Get a set of the entries
@@ -53,15 +75,13 @@ public class CopyFile {
             // Get an iterator
             Iterator i = set.iterator();
 
-            // Display elements
+            // Display elements*/
             System.out.println("Hashmap listing");
             Integer loopTeller = 0;
-            while(i.hasNext() && loopTeller++ < maxAntall ) {
-                Map.Entry me = (Map.Entry) i.next();
-                System.out.print("key: " + me.getKey() + ": ");
-                System.out.println(" value:" + me.getValue());
+            while( loopTeller++ < maxAntall ) {
 
-                String inFile = me.getValue().toString();
+                randomNum = rand.nextInt(mapSize);
+                String inFile = hm.get(randomNum);
                 Path src = Paths.get(inFile);
 
                 String outFile = targetPath + "\\" + src.getFileName().toString();
@@ -77,14 +97,7 @@ public class CopyFile {
             }
         }
 
-        void lagreNavn (Path path) {
-            String filNavn = path.toString().toLowerCase();
 
-            if (filNavn.endsWith(".jpg")) {
-                System.out.println(teller + " skrivNavn" + filNavn);
-                hm.put(teller++, filNavn);
-             }
-        }
     }
 }
 
