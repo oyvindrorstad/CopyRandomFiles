@@ -8,7 +8,6 @@ import static java.nio.file.StandardCopyOption.*;
 
 public class CopyFile {
     static Integer teller=0;
-
     static String sourcePath ="S";
     static String targetPath ="T";
     static Integer maxAntall =1;
@@ -29,7 +28,6 @@ public class CopyFile {
 
         System.out.println("sourcePath:" + sourcePath + " targetPath:" + targetPath + " maxAntall:" + maxAntall + " maxBytes:" + maxBytes);
 
-        //Usage:
         PathStore pathStore = new PathStore();
         try {
             Files.walk(Paths.get(sourcePath))
@@ -38,7 +36,7 @@ public class CopyFile {
 
             pathStore.kopierAlleFiler();
         } catch(java.io.IOException e) {
-            System.out.println("KOPIERING AV FILER  failed:" + e);
+            System.out.println("Files.walk  failed:" + e);
         }
     }
 
@@ -56,48 +54,39 @@ public class CopyFile {
 
         void kopierAlleFiler() {
 
-            //String filNavn = hm.get(2);
             Integer mapSize = hm.size();
-
             Random rand = new Random();
-
-            // nextInt is normally exclusive of the top value,
-            // so add 1 to make it inclusive
             Integer randomNum;
-           /* randomNum = rand.nextInt(mapSize);
-            randomNum = rand.nextInt(mapSize);
-            randomNum = rand.nextInt(mapSize);
-
-            // kopier filer
-            // Get a set of the entries
-            Set set = hm.entrySet();
-
-            // Get an iterator
-            Iterator i = set.iterator();
+            long  sumSize = 0;
 
             // Display elements*/
             System.out.println("Hashmap listing");
             Integer loopTeller = 0;
-            while( loopTeller++ < maxAntall ) {
 
+            while( loopTeller++ < maxAntall && loopTeller < mapSize && sumSize < maxBytes) {
                 randomNum = rand.nextInt(mapSize);
                 String inFile = hm.get(randomNum);
                 Path src = Paths.get(inFile);
 
+                try {
+                    sumSize += Files.size(src);
+                }
+                catch(java.io.IOException e) {
+                    System.out.println("Files.walk  failed:" + e);
+                }
+
                 String outFile = targetPath + "\\" + src.getFileName().toString();
                 Path dst = Paths.get(outFile);
 
-                System.out.println("inFile:" + inFile + " outFile:" + outFile + " sourcePath:" + sourcePath + " targetPath:" + targetPath);
+                System.out.println("sumSize:" + sumSize + " randomNum: " + randomNum + " inFile:" + inFile + " outFile:" + outFile + " sourcePath:" + sourcePath + " targetPath:" + targetPath);
 
                 try {
                     Files.copy(src, dst, REPLACE_EXISTING);
                 } catch (java.io.IOException e) {
-                    System.out.println("createDirectory failed:" + e);
+                    System.out.println("Files.copy failed:" + e);
                 }
             }
         }
-
-
     }
 }
 
