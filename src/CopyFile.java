@@ -63,7 +63,7 @@ public class CopyFile {
             System.out.println("Hashmap listing");
             Integer loopTeller = 0;
 
-            while( loopTeller++ < maxAntall && loopTeller < mapSize && sumSize < maxBytes) {
+            while( loopTeller++ < maxAntall && loopTeller < mapSize /*&& sumSize < maxBytes*/) {
                 randomNum = rand.nextInt(mapSize);
                 String inFile = hm.get(randomNum);
                 Path src = Paths.get(inFile);
@@ -78,7 +78,7 @@ public class CopyFile {
                 String outFile = targetPath + "\\" + src.getFileName().toString();
                 Path dst = Paths.get(outFile);
 
-                System.out.println("sumSize:" + sumSize + " randomNum: " + randomNum + " inFile:" + inFile + " outFile:" + outFile + " sourcePath:" + sourcePath + " targetPath:" + targetPath);
+                System.out.println("loopTeller=" + loopTeller + " sumSize:" + sumSize + " randomNum: " + randomNum + " inFile:" + inFile + " outFile:" + outFile + " sourcePath:" + sourcePath + " targetPath:" + targetPath);
 
                 try {
                     Files.copy(src, dst, REPLACE_EXISTING);
