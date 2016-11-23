@@ -11,12 +11,14 @@ public class CopyFile {
     static String sourcePath ="S";
     static String targetPath ="T";
     static Integer maxAntall =1;
-    static Integer maxBytes=2;
+    static long maxMBytes=1000;
 
     public static void main(String args[]) {
         System.out.println("Hei");
 
         // Pars input
+        if (args.length == 0)
+            System.out.println("usage: sourcePath targetPath maxNumFiles maxBytes(MB)");
         if (args.length > 0)
             sourcePath = args[0].toLowerCase();
         if (args.length > 1)
@@ -24,9 +26,9 @@ public class CopyFile {
         if (args.length > 2)
             maxAntall = Integer.parseInt((args[2]));
         if (args.length > 3)
-            maxBytes = Integer.parseInt((args[3]));
+            maxMBytes = Integer.parseInt((args[3]));
 
-        System.out.println("sourcePath:" + sourcePath + " targetPath:" + targetPath + " maxAntall:" + maxAntall + " maxBytes:" + maxBytes);
+        System.out.println("sourcePath:" + sourcePath + " targetPath:" + targetPath + " maxAntall:" + maxAntall + " maxBytes:" + maxMBytes);
 
         PathStore pathStore = new PathStore();
         try {
@@ -63,7 +65,7 @@ public class CopyFile {
             System.out.println("Hashmap listing");
             Integer loopTeller = 0;
 
-            while( loopTeller++ < maxAntall && loopTeller < mapSize /*&& sumSize < maxBytes*/) {
+            while( loopTeller++ < maxAntall && loopTeller < mapSize && sumSize < maxMBytes*1000000) {
                 randomNum = rand.nextInt(mapSize);
                 String inFile = hm.get(randomNum);
                 Path src = Paths.get(inFile);
