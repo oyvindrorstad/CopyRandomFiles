@@ -5,6 +5,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.io.File;
 import static java.nio.file.StandardCopyOption.*;
+import static javafx.application.Platform.exit;
+
+import java.util.stream.Collectors;
 
 public class CopyFile {
     static Integer teller=0;
@@ -12,8 +15,7 @@ public class CopyFile {
     static String targetPath ="T";
     static Integer maxAntall =1;
     static long maxMBytes=1000;
-
-
+    static Integer loopTeller2 = 1;
 
     public static void main(String args[]) {
         System.out.println("Hei");
@@ -38,7 +40,7 @@ public class CopyFile {
                     .filter(Files::isRegularFile)
                     .forEach(pathStore::lagreNavn);
 
-            pathStore.kopierAlleFiler();
+            pathStore.kopierAlleFilerParallel();
         } catch(java.io.IOException e) {
             System.out.println("Files.walk  failed:" + e);
         }
@@ -82,15 +84,52 @@ public class CopyFile {
                 String outFile = targetPath + "\\" + src.getFileName().toString();
                 Path dst = Paths.get(outFile);
 
-                System.out.println("loopTeller=" + loopTeller + " sumSize:" + sumSize + " randomNum: " + randomNum + " inFile:" + inFile + " outFile:" + outFile + " sourcePath:" + sourcePath + " targetPath:" + targetPath);
+                System.out.println("antall=" + loopTeller + " sumSize:" + sumSize + " randomNum: " + randomNum + " inFile:" + inFile + " outFile:" + outFile + " sourcePath:" + sourcePath + " targetPath:" + targetPath);
 
                 try {
                     Files.copy(src, dst, REPLACE_EXISTING);
                 } catch (java.io.IOException e) {
                     System.out.println("Files.copy failed:" + e);
+                    exit();
+                }
+            }
+        }
+
+        void kopierAlleFilerParallel() {
+
+            Random rand = new Random();
+            long sumSize = 0;
+
+            // Random copy
+            List<String> bildeList = rand.
+                    ints(hm.size(), 0, hm.size()).
+                    mapToObj(i -> hm.get(i)).
+                    collect(Collectors.toList());
+
+            // Display elements*/
+            System.out.println("Hashmap listing");
+            Integer loopTeller = 0;
+
+            bildeList.parallelStream()
+                    .forEach(this::kopierFil);
+        }
+
+        void kopierFil (String fileName) {
+
+                Path src = Paths.get(fileName);
+
+                String outFile = targetPath + "\\" + src.getFileName().toString();
+                Path dst = Paths.get(outFile);
+
+                System.out.println("antall=" + loopTeller2++ + " inFile:" + fileName + " outFile:" + outFile + " sourcePath:" + sourcePath + " targetPath:" + targetPath);
+
+                try {
+                    Files.copy(src, dst, REPLACE_EXISTING);
+                } catch (java.io.IOException e) {
+                    System.out.println("Files.copy failed:" + e);
+                    exit();
                 }
             }
         }
     }
-}
 
